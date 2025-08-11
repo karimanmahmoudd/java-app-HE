@@ -5,7 +5,7 @@ pipeline {
 
     environment {
         DOCKER_USER = credentials('kariman-docker')
-        DOCKER_PASS = credentials('docker-password')
+        DOCKER_PASS = credentials('password-docker')
         IMAGE_NAME = 'karimanmahmoud/app-java'
     }
     stages {
