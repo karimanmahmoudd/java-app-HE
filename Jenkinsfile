@@ -1,36 +1,45 @@
-@Library('iti-sharedlib')_
+@Library('shared-lib')_
+ 
+pipeline {
+    agent any
 
-properties([
-    disableConcurrentBuilds()
-])
-
-node("java"){
-
-    def javaHome = tool name: 'java-11', type: 'jdk'
-    def mavenHome = tool name: 'mvn-3-5-4', type: 'maven'
-    def DOCKER_USER = credentials('docker-username')
-    def DOCKER_PASS = credentials('docker-password')
-
-    stage("Get code"){
-        checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Hassan-Eid-Hassan/java.git']])
+    environment {
+        DOCKER_USER = credentials('kariman-docker')
+        DOCKER_PASS = credentials('docker-password')
+        IMAGE_NAME = 'karimanmahmoud/app-java'
     }
-    stage("build app"){
-        env.JAVA_HOME = javaHome
-        env.PATH = "${javaHome}/bin:${mavenHome}/bin:${env.PATH}"
-        sh 'java -version'
-        sh 'mvn -version'
-
-        def mavenBuild = new org.iti.mvn()
-        // mavenBuild.javaBuild("package install")
-        def vmIP = hello()
-        echo "${vmIP}"
-    }
-    stage("archive app"){
-        archiveArtifacts artifacts: '**/*.jar', followSymlinks: false
-    }
-    stage("docker build"){
-        def docker = new com.iti.docker()
-        docker.build("iti-java", "${BUILD_NUMBER}")
-        sh "docker images"
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    def mavenBuild = new org.iti.mvn()
+                    mavenBuild.javaBuild("package install")
+                }
+            }
+        }
+        stage('Archive') {
+            steps {
+                script {
+                    def archiveApp = new org.iti.archiveApp()
+                    archiveApp.archive()
+                }
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                script {
+                    def dockerBuildApp = new org.iti.dockerBuild()
+                    dockerBuildApp.dockerBuild(IMAGE_NAME, env.BUILD_NUMBER)
+                }
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                script {
+                    def dockerPushApp = new org.iti.dockerPush()
+                    dockerPushApp.dockerPush(IMAGE_NAME, env.BUILD_NUMBER, env.DOCKER_USER, env.DOCKER_PASS)
+                }
+            }
+        }
     }
 }
