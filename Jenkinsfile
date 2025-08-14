@@ -1,45 +1,43 @@
-@Library('shared-lib')_
- 
 pipeline {
-    agent any
+  agent any
 
-    environment {
-        DOCKER_USER = credentials('kariman-docker')
-        DOCKER_PASS = credentials('password-docker')
-        IMAGE_NAME = 'karimanmahmoud/app-java'
+  tools { 
+    maven 'maven-tools' 
+  }
+
+  environment {
+    DOCKER_USER = credentials('kariman-docker')
+    DOCKER_PASS = credentials('password-docker')
+    IMAGE_REPO  = 'karimanmahmoud/app-java'
+    IMAGE_TAG   = "v${env.BUILD_NUMBER}"
+
+    GITOPS_URL    = 'https://github.com/karimanmahmoudd/argocd-java-project.git'
+    GITOPS_BRANCH = 'main'
+    GITOPS_FILE   = 'deployment.yaml'
+  }
+
+  stages {
+    stage('Checkout') { 
+      steps { 
+        git 'https://github.com/Hassan-Eid-Hassan/java.git' 
+      } 
     }
-    stages {
-        stage('Build') {
-            steps {
-                script {
-                    def mavenBuild = new org.iti.mvn()
-                    mavenBuild.javaBuild("package install")
-                }
-            }
-        }
-        stage('Archive') {
-            steps {
-                script {
-                    def archiveApp = new org.iti.archiveApp()
-                    archiveApp.archive()
-                }
-            }
-        }
-        stage('Docker Build') {
-            steps {
-                script {
-                    def dockerBuildApp = new org.iti.dockerBuild()
-                    dockerBuildApp.dockerBuild(IMAGE_NAME, env.BUILD_NUMBER)
-                }
-            }
-        }
-        stage('Docker Push') {
-            steps {
-                script {
-                    def dockerPushApp = new org.iti.dockerPush()
-                    dockerPushApp.dockerPush(IMAGE_NAME, env.BUILD_NUMBER, env.DOCKER_USER, env.DOCKER_PASS)
-                }
-            }
-        }
+
+    stage('Build & Test') { 
+      steps { 
+        sh 'mvn -B clean package' 
+      } 
     }
+
+    stage('Docker build & push') {
+      steps {
+        sh """
+          docker build -t ${IMAGE_REPO}:${IMAGE_TAG} .
+          echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
+          docker push ${IMAGE_REPO}:${IMAGE_TAG}
+          docker logout || true
+        """
+      }
+    }
+  }
 }
