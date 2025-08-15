@@ -45,7 +45,7 @@ pipeline {
       steps {
         // Checkout repo using Jenkins credentials
         git branch: 'main',
-            credentialsId: 'github-credentials',
+            credentialsId: 'github-credentials-1',
             url: 'git@github.com:karimanmahmoudd/argocd-java-project.git'
 
         // Now run shell commands
