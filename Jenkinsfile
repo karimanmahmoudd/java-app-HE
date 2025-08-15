@@ -49,7 +49,7 @@ pipeline {
             url: 'git@github.com:karimanmahmoudd/argocd-java-project.git'
 
         // Now run shell commands
-        sh """
+        sh '''
             pwd
             ls
             sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" deployment.yaml
@@ -59,8 +59,8 @@ pipeline {
 
             git add .
             git commit -m "update image"
-            git push -u origin main
-        """
+            git push
+        '''
       }
     }
   }
