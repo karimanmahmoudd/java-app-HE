@@ -43,23 +43,26 @@ pipeline {
 
     stage('Update ArgoCD') {
       steps {
-        sh '''
-                ls
-                git branch: 'main', 
-                    credentialsId: 'github-credentials-id', 
-                    url: 'git@github.com:karimanmahmoudd/argocd-java-project.git'
-                pwd
-                ls
-                cd argocd-java-project
-                pwd
-                ls
-                sed -i "s|image: .*|image: ${IMAGE_NAME}:v${IMAGE_TAG}|" deployment.yml
-
-                git add .
-                git commit -m "update image"
-                git push
-                '''
-        }
+          // Checkout repo using Jenkins credentials
+          git branch: 'main',
+              credentialsId: 'github-credentials-id',
+              url: 'git@github.com:karimanmahmoudd/argocd-java-project.git'
+  
+          // Now run shell commands
+          sh """
+              pwd
+              ls
+              sed -i "s|image: .*|image: ${IMAGE_NAME}:v${IMAGE_TAG}|" deployment.yml
+  
+              git config user.email "jenkins@example.com"
+              git config user.name "Jenkins CI"
+  
+              git add .
+              git commit -m "update image"
+              git push
+          """
       }
+  }
+
   }
 }
