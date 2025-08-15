@@ -49,8 +49,9 @@ pipeline {
             url: 'git@github.com:karimanmahmoudd/argocd-java-project.git'
 
         // Now run shell commands
-      sshagent(['github-credentials']) {
         sh """
+         git config user.name "karimanmahmoudd"
+        git config user.email "kariman122@gmail.com"
             pwd
             ls
             cd argocd-java-project
@@ -61,7 +62,6 @@ pipeline {
             git commit -m "update image" || true
             git push origin main
         """
-      }
       }
     }
   }
