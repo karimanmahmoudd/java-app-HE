@@ -40,23 +40,21 @@ pipeline {
       }
     }
 
-    stage('Update ArgoCD Manifest') {
+    stage('Update ArgoCD') {
       steps {
-        dir('gitops-repo') {
-          git branch: "${GITOPS_BRANCH}",
-              url: "${GITOPS_URL}",
-              credentialsId: 'github-credentials-id'
+        sh '''
+                git clone git@github.com:karimanmahmoudd/argocd-java-project.git
+                pwd
+                ls
+                cd Java-App-ArgoCD
+                pwd
+                ls
+                sed -i "s|image: .*|image: ${IMAGE_NAME}:v${IMAGE_TAG}|" deployment.yml
 
-          sh """
-            # Update the image tag in the deployment.yaml
-            sed -i 's|image: ${IMAGE_REPO}:.*|image: ${IMAGE_REPO}:${IMAGE_TAG}|' ${GITOPS_FILE}
-
-            git config user.email "jenkins@ci"
-            git config user.name "Jenkins CI"
-            git add ${GITOPS_FILE}
-            git commit -m "Update image tag to ${IMAGE_TAG}"
-            git push origin ${GITOPS_BRANCH}
-          """
+                git add .
+                git commit -m "update image"
+                git push
+                '''
         }
       }
     }
