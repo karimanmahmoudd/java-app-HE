@@ -53,6 +53,8 @@ pipeline {
             pwd
             ls
             sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" deployment.yaml
+            git config --global user.email "karimanm122@gmail.com"
+            git config --global user.name "karimanmahmoudd"
             git add .
             git commit -m "update image"
             git push
