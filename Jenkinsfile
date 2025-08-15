@@ -44,7 +44,7 @@ pipeline {
       steps {
         sh '''
                 ls
-                git clone git@github.com:karimanmahmoudd/argocd-java-project.git
+                git branch: 'main', credentialsId: 'github-credentials-id', url: 'git@github.com:karimanmahmoudd/argocd-java-project.git'
                 pwd
                 ls
                 cd argocd-java-project
