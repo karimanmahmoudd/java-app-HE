@@ -57,7 +57,7 @@ pipeline {
             git config --global user.name "karimanmahmoudd"
             git add .
             git commit -m "update image"
-            git push --set-upstream origin main
+            git push 
         """
       }
     }
