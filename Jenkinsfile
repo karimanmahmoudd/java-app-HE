@@ -55,9 +55,6 @@ pipeline {
             
             pwd
             ls
-            cd argocd-java-project
-            pwd
-            ls
             sed -i "s|image: .*|image: ${IMAGE_REPO}:v${IMAGE_TAG}|" deployment.yml
             git add .
             git commit -m "update image" || true
