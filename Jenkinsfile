@@ -50,8 +50,9 @@ pipeline {
 
         // Now run shell commands
         sh """
-         git config user.name "karimanmahmoudd"
-        git config user.email "kariman122@gmail.com"
+            git config user.name "karimanmahmoudd"
+            git config user.email "kariman122@gmail.com"
+            
             pwd
             ls
             cd argocd-java-project
