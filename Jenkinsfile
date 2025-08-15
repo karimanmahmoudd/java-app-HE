@@ -43,10 +43,11 @@ pipeline {
     stage('Update ArgoCD') {
       steps {
         sh '''
+                ls
                 git clone git@github.com:karimanmahmoudd/argocd-java-project.git
                 pwd
                 ls
-                cd Java-App-ArgoCD
+                cd argocd-java-project
                 pwd
                 ls
                 sed -i "s|image: .*|image: ${IMAGE_NAME}:v${IMAGE_TAG}|" deployment.yml
