@@ -45,11 +45,11 @@ pipeline {
       steps {
         // Checkout repo using Jenkins credentials
         git branch: 'main',
-            credentialsId: 'github-credentials-1',
+            credentialsId: 'github-credentials',
             url: 'git@github.com:karimanmahmoudd/argocd-java-project.git'
 
         // Now run shell commands
-      sshagent(['github-credentials-1']) {
+      sshagent(['github-credentials']) {
         sh """
             pwd
             ls
