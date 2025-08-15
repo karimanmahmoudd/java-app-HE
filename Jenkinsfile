@@ -52,7 +52,7 @@ pipeline {
         sh """
             pwd
             ls
-            sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" deployment.yml
+            sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" deployment.yaml
             git add .
             git commit -m "update image"
             git push
