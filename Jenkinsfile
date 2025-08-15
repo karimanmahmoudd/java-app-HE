@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   tools { 
-    maven 'maven-tools' 
+    maven 'maven-tools'
     git 'git-v1.0'
   }
 
@@ -40,28 +40,27 @@ pipeline {
         """
       }
     }
-  }
-}
 
- stage('Update ArgoCD') {
+    stage('Update ArgoCD') {
       steps {
-          // Checkout repo using Jenkins credentials
-          git branch: 'main',
-              credentialsId: 'github-credentials',
-              url: 'git@github.com:karimanmahmoudd/argocd-java-project.git'
-  
-          // Now run shell commands
-          sh """
-              pwd 
-              ls 
-              cd argocd-java-project 
-              pwd 
-              ls 
-              sed -i "s|image: .*|image: ${IMAGE_REPO}:v${IMAGE_TAG}|" deployment.yml
-              git add . 
-              git commit -m "update image" 
-              git push
-          """
+        // Checkout repo using Jenkins credentials
+        git branch: 'main',
+            credentialsId: 'github-credentials',
+            url: 'git@github.com:karimanmahmoudd/argocd-java-project.git'
+
+        // Now run shell commands
+        sh """
+            pwd
+            ls
+            cd argocd-java-project
+            pwd
+            ls
+            sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" deployment.yml
+            git add .
+            git commit -m "update image"
+            git push
+        """
       }
+    }
   }
 }
