@@ -55,6 +55,8 @@ pipeline {
             sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" deployment.yaml
             git config --global user.email "karimanm122@gmail.com"
             git config --global user.name "karimanmahmoudd"
+            ssh -T git@github.com
+
             git add .
             git commit -m "update image"
             git push -u origin main
