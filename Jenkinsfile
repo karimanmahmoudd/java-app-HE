@@ -55,7 +55,7 @@ pipeline {
             
             pwd
             ls
-            sed -i "s|image: .*|image: ${IMAGE_REPO}:v${IMAGE_TAG}|" deployment.yml
+            sed -i "s|image: .*|image: ${IMAGE_REPO}:v${IMAGE_TAG}|" deployment.yaml
             git add .
             git commit -m "update image" || true
             git push origin main
