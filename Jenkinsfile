@@ -33,7 +33,7 @@ pipeline {
     stage('Docker build & push') {
       steps {
         sh """
-          docker build -t ${IMAGE_REPO}:${IMAGE_TAG} .
+          docker build -t ${IMAGE_REPO}:v${IMAGE_TAG} .
           echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
           docker push ${IMAGE_REPO}:${IMAGE_TAG}
           docker logout || true
@@ -112,7 +112,7 @@ pipeline {
               cd argocd-java-project 
               pwd 
               ls 
-              sed -i "s|image: .*|image: ${IMAGE_NAME}:v${IMAGE_TAG}|" deployment.yml 
+              sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" deployment.yml
               git add . 
               git commit -m "update image" 
               git push
