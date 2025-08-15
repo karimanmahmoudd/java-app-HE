@@ -49,18 +49,19 @@ pipeline {
             url: 'git@github.com:karimanmahmoudd/argocd-java-project.git'
 
         // Now run shell commands
-        sh '''
+      sshagent(['github-credentials-1']) {
+        sh """
             pwd
             ls
-            sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" deployment.yaml
-            git config --global user.email "karimanm122@gmail.com"
-            git config --global user.name "karimanmahmoudd"
-            ssh -T git@github.com
-
+            cd argocd-java-project
+            pwd
+            ls
+            sed -i "s|image: .*|image: ${IMAGE_REPO}:v${IMAGE_TAG}|" deployment.yml
             git add .
-            git commit -m "update image"
-            git push
-        '''
+            git commit -m "update image" || true
+            git push origin main
+        """
+      }
       }
     }
   }
