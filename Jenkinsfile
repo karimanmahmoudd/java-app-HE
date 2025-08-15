@@ -2,7 +2,8 @@ pipeline {
   agent any
 
   tools { 
-    maven 'maven-tools' 
+    maven 'maven-tools',
+    git 'git-v1.0'
   }
 
   environment {
